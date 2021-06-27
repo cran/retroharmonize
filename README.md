@@ -5,17 +5,18 @@
 
 <!-- badges: start -->
 
-[![Project Status: Minimal or no implementation has been done yet, or
-the repository is only intended to be a limited example, demo, or
-proof-of-concept.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
+[![Project Status: Active. The project has reached a stable, usable
+state and is being actively
+developed..](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![license](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3937746.svg)](https://doi.org/10.5281/zenodo.3937746)
-[![Follow
-author](https://img.shields.io/twitter/follow/antaldaniel.svg?style=social)](https://twitter.com/intent/follow?screen_name=antaldaniel)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5034752.svg)](https://doi.org/10.5281/zenodo.5034752)
 [![Codecov test
 coverage](https://codecov.io/gh/antaldaniel/retroharmonize/branch/master/graph/badge.svg)](https://codecov.io/gh/antaldaniel/retroharmonize?branch=master)
-[![Travis build
-status](https://travis-ci.com/antaldaniel/retroharmonize.svg?branch=master)](https://travis-ci.com/antaldaniel/retroharmonize)
+[![R-CMD-check](https://github.com/antaldaniel/retroharmonize/workflows/R-CMD-check/badge.svg)](https://github.com/rOpenGov/retroharmonize/actions)
+[![Follow
+author](https://img.shields.io/twitter/follow/antaldaniel.svg?style=social)](https://twitter.com/intent/follow?screen_name=antaldaniel)
+[![Follow
+rOpenGov](https://img.shields.io/twitter/follow/ropengov.svg?style=social)](https://twitter.com/intent/follow?screen_name=ropengov)
 <!-- badges: end -->
 
 The goal of `retroharmonize` is to facilitate retrospective (ex-post)
@@ -29,25 +30,27 @@ Currently being generalized from problems solved in the not yet released
 [eurobarometer](https://github.com/antaldaniel/eurobarometer) package
 ([doi](https://doi.org/10.5281/zenodo.3825700).)
 
-You can download the manual in
-[PDF](https://retroharmonize.dataobservatory.eu/retroharmonize_0.1.13.pdf).
-
 ## Installation
 
-The package will be available for install via after review on
-[CRAN](https://CRAN.R-project.org):
+The package is available on [CRAN](https://CRAN.R-project.org):
 
 ``` r
 install.packages("retroharmonize")
 ```
 
-The development version from [GitHub](https://github.com/) can be
-installed with:
+The development version has some small improvements in functionality and
+minor documentation updates. It can be installed from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("antaldaniel/retroharmonize")
 ```
+
+You can download the manual in PDF for the [0.1.13 CRAN
+release](https://retroharmonize.dataobservatory.eu/retroharmonize_0.1.13.pdf)
+and for the [0.1.16 development
+release](https://retroharmonize.dataobservatory.eu/retroharmonize_0.1.16.pdf).
 
 ## Retrospective data harmonization
 
@@ -98,17 +101,84 @@ Labels](https://retroharmonize.dataobservatory.eu/articles/harmonize_labels.html
 we discuss the characteristics of the `labelled_spss_survey()` class and
 demonstrates the problems that using this class solves.
 
-We also provide two extensive case studies illustrating how the
+We also provide three extensive case studies illustrating how the
 `retroharmonize` package can be used for ex-post harmonization of data
-from cross-national surveys on the example of the
-[Afrobarometer](https://retroharmonize.dataobservatory.eu/articles/afrobarometer.html)
-and the
-[Eurobarometer](https://retroharmonize.dataobservatory.eu/articles/eurobarometer.html).
+from cross-national surveys:
+
+-   [Afrobarometer](https://retroharmonize.dataobservatory.eu/articles/afrobarometer.html)
+-   [Arab
+    Barometer](https://retroharmonize.dataobservatory.eu/articles/arabbarometer.html)
+-   [Eurobarometer](https://retroharmonize.dataobservatory.eu/articles/eurobarometer.html)
+
 The creators of `retroharmonize` are not affiliated with either
 Afrobarometer, Eurobarometer, or the organizations that designs,
 produces or archives their surveys.
 
-## Code of Conduct
+We started building an experimental APIs data is running regions
+regularly and improving known statistical data sources. See: [Digital
+Music Observatory](https://music.dataobservatory.eu/), [Green Deal Data
+Observatory](https://greendeal.dataobservatory.eu/), [Economy Data
+Observatory](https://economy.dataobservatory.eu/).
+
+## Citations and related work
+
+### Citing the data sources
+
+Our package has been tested on three harmonized survey’s microdata.
+Because [retroharmonize](https://retroharmonize.dataobservatory.eu/) is
+not affiliated with any of these data sources, to replicate our
+tutorials or work with the data, you have download the data files from
+these sources, and you have to cite those sources in your work.
+
+**Afrobarometer** data: Cite
+[Afrobarometer](https://afrobarometer.org/data/) **Arab Barometer**
+data: cite [Arab
+Barometer](https://www.arabbarometer.org/survey-data/data-downloads/).
+**Eurobarometer** data: The
+[Eurobarometer](https://ec.europa.eu/commfrontoffice/publicopinion/index.cfm)
+data
+[Eurobarometer](https://ec.europa.eu/commfrontoffice/publicopinion/index.cfm)
+raw data and related documentation (questionnaires, codebooks, etc.) are
+made available by *GESIS*, *ICPSR* and through the *Social Science Data
+Archive* networks. You should cite your source, in our examples, we rely
+on the
+[GESIS](https://www.gesis.org/en/eurobarometer-data-service/search-data-access/data-access)
+data files.
+
+### Citing the retroharmonize R package
+
+For main developer and contributors, see the
+[package](https://retroharmonize.dataobservatory.eu/) homepage.
+
+This work can be freely used, modified and distributed under the GPL-3
+license:
+
+``` r
+citation("retroharmonize")
+#> 
+#> To cite package 'retroharmonize' in publications use:
+#> 
+#>   Daniel Antal (2021). retroharmonize: Ex Post Survey Data
+#>   Harmonization. R package version 0.1.16.
+#>   https://retroharmonize.dataobservatory.eu/
+#> 
+#> A BibTeX entry for LaTeX users is
+#> 
+#>   @Manual{,
+#>     title = {retroharmonize: Ex Post Survey Data Harmonization},
+#>     author = {Daniel Antal},
+#>     year = {2021},
+#>     note = {R package version 0.1.16},
+#>     url = {https://retroharmonize.dataobservatory.eu/},
+#>   }
+```
+
+### Contact
+
+For contact information, see the
+[package](https://retroharmonize.dataobservatory.eu/) homepage.
+
+### Code of Conduct
 
 Please note that the `retroharmonize` project is released with a
 [Contributor Code of

@@ -15,12 +15,15 @@ harmonize_waves(waves, .f, status_message = FALSE)
 it shows the id of the survey that is being joined.}
 }
 \value{
-A natural full join of all surveys into a data frame.
+A natural full join of all surveys in a single data frame.
 }
 \description{
-Harmonize the values of surveys. It binds together variables
+Harmonize the values of surveys.
+}
+\details{
+The functions binds together variables
 that are all present in the surveys, and applies a 
-harmonization function on them.
+harmonization function \code{.f} on them.
 }
 \examples{
 \donttest{
@@ -72,8 +75,11 @@ Other harmonization functions:
 \code{\link{collect_val_labels}()},
 \code{\link{harmonize_na_values}()},
 \code{\link{harmonize_values}()},
+\code{\link{harmonize_var_names}()},
 \code{\link{label_normalize}()},
 \code{\link{merge_waves}()},
-\code{\link{na_range_to_values}()}
+\code{\link{na_range_to_values}()},
+\code{\link{suggest_permanent_names}()},
+\code{\link{suggest_var_names}()}
 }
 \concept{harmonization functions}

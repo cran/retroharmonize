@@ -2,7 +2,7 @@
 title: "Case Study: Working with Eurobarometer surveys"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Case Study: Working With Eurobarometer}
+  %\VignetteIndexEntry{Case Study: Working with Eurobarometer surveys}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -21,7 +21,8 @@ The goal in this case study is to analyze trust in the national and European par
 
 The [Eurobarometer](https://ec.europa.eu/commfrontoffice/publicopinion/index.cfm) is a biannual survey conducted by the European Commission with the goal of monitoring the public opinion of populations of EU member states and -- occasionally -- also in candidate countries. Each EB wave is devoted to a particular topic, but most waves ask some "trend questions", i.e. questions that are repeated frequently in the same form. Trust in institutions is among such trend questions.
 
-In this case study we use nine waves of the Eurobarometer between 1996 and 2019: 
+The [Eurobarometer](https://ec.europa.eu/commfrontoffice/publicopinion/index.cfm) data
+[Eurobarometer](https://ec.europa.eu/commfrontoffice/publicopinion/index.cfm) raw data and related documentation (questionnaires, codebooks, etc.) are made available by *GESIS*, *ICPSR* and through the *Social Science Data Archive* networks. You should cite your source, in our examples, we rely on the [GESIS](https://www.gesis.org/en/eurobarometer-data-service/search-data-access/data-access) data files. In this case study we use nine waves of the Eurobarometer between 1996 and 2019: 
 [44.2bis (January-March 1996)](https://search.gesis.org/research_data/ZA2828), [51.0 (March-April 1999)](https://search.gesis.org/research_data/ZA3171), [57.1 (March-May 2002)](https://search.gesis.org/research_data/ZA3639), [64.2 (October-November 2005)](https://search.gesis.org/research_data/ZA4414), [69.2 (Mar-May 2008)](https://search.gesis.org/research_data/ZA4744)
 [75.3 (May 2011)](https://search.gesis.org/research_data/ZA5481), [81.2 (March 2014)](https://search.gesis.org/research_data/ZA5913), [87.3 (May 2017)](https://search.gesis.org/research_data/ZA6863), and [91.2 (March 2019)](https://search.gesis.org/research_data/ZA7562).  
 
@@ -48,7 +49,7 @@ eb_waves <- read_surveys(eurobarometer_waves, .f='read_rds')
 We can review if the main descriptive metadata is correctly present with `document_waves()`.
 
 ```{r document-waves, eval=FALSE}
-documented_eb_waves <- document_waves (eb_waves) 
+documented_eb_waves <- document_waves(eb_waves) 
 ```
 
 ## Metadata map
@@ -56,12 +57,11 @@ documented_eb_waves <- document_waves (eb_waves)
 We start by extracting metadata from the survey data files and storing them in a tidy table, where each row contains information about a variable from the survey data file. To keep the size manageable, we keep only a few variables: the row ID, the weighting variable, the country code, and variables that contain "parliament" or "commission" in their labels.
 
 ```{r metadata, eval=FALSE}
-eb_trust_metadata <- lapply ( X = eb_waves, FUN = metadata_create   )
+eb_trust_metadata <- lapply ( X = eb_waves, FUN = metadata_create )
 eb_trust_metadata <- do.call(rbind, eb_trust_metadata)
-#let's keep the example managable:
+#let's keep the example manageable:
 eb_trust_metadata  <- eb_trust_metadata %>%
-  filter ( grepl( "parliament|commission|rowid|weight_poststrat|country_id", var_name_orig ))
-
+  filter ( grepl("parliament|commission|rowid|weight_poststrat|country_id", var_name_orig) )
 ```
 
 ```{r head}
@@ -95,11 +95,12 @@ working_directory <- tempdir()
 # To replicate the worklist, you need to have the SPSS file names 
 # as a list, and you have to set up your own import and export path.
 
-selected_eb_metadata <- readRDS(system.file("eurob", "selected_eb_waves.rds", package = "retroharmonize")) %>%
-  mutate ( id = substr(filename,1,6)) %>%
-  rename ( var_label = var_label_std) %>%
+selected_eb_metadata <- readRDS(
+  system.file("eurob", "selected_eb_waves.rds", package = "retroharmonize")
+  ) %>%
+  mutate ( id = substr(filename,1,6) ) %>%
+  rename ( var_label = var_label_std ) %>%
   mutate ( var_name = var_label )
-
 
 ## This code is not evaluated, it is only an example. You are likely 
 ## to have a directory where you have already downloaded the data
@@ -110,7 +111,6 @@ subset_save_surveys (
   selection_name = "trust",
   import_path = gesis_dir, 
   export_path = working_directory )
-
 ```
 
 ## Harmonize the labels
@@ -129,9 +129,9 @@ harmonize_eb_trust <- function(x) {
 
   harmonize_values(x, 
                    harmonize_labels = label_list, 
-                   na_values = c("do_not_know"=99997,
-                                 "declined"=99998,
-                                 "inap"=99999)
+                   na_values = c("do_not_know"= 99997,
+                                 "declined"   = 99998,
+                                 "inap"       = 99999 )
   )
 }
 ```

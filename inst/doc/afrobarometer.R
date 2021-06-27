@@ -21,8 +21,8 @@ library(retroharmonize)
 library(dplyr)
 library(tidyr)
 load(file = system.file(
-  "afrob", "afrob_vignette.rda", package = "retroharmonize"))
-#source( here ("not_included", "daniel_env.R"))
+  "afrob", "afrob_vignette.rda", 
+  package = "retroharmonize"))
 
 ## ----setup, eval=FALSE--------------------------------------------------------
 #  library(retroharmonize)
@@ -89,7 +89,7 @@ head(to_harmonize %>%
 print(documenteded_merged_ab)
 
 ## ----check, eval=FALSE--------------------------------------------------------
-#  R6 <- pull_survey ( merged_ab, id = "Afrobarometer_R6")
+#  R6 <- pull_survey ( merged_ab, id = "Afrobarometer_R6" )
 
 ## ----pulled-attributes--------------------------------------------------------
 attributes(R6$trust_president[1:20])

@@ -11,7 +11,9 @@ harmonize_values(
   na_values = c(do_not_know = 99997, declined = 99998, inap = 99999),
   na_range = NULL,
   id = "survey_id",
-  name_orig = NULL
+  name_orig = NULL,
+  remove = NULL,
+  perl = FALSE
 )
 }
 \arguments{
@@ -35,6 +37,11 @@ continuous missing value range. In most surveys this should be left
 
 \item{name_orig}{The original name of the variable. If left \code{NULL}
 it uses the latest name of the object \code{x}.}
+
+\item{remove}{Defaults to \code{NULL}.  A character or regex that will be removed from all
+old value labels, like \code{"\\("|\\)} for ( and ).}
+
+\item{perl}{Use perl-like regex? Defaults to {FALSE}.}
 }
 \value{
 A labelled vector that contains in its metadata attributes
@@ -69,17 +76,23 @@ harmonize_values (
 Other harmonization functions: 
 \code{\link{collect_val_labels}()},
 \code{\link{harmonize_na_values}()},
+\code{\link{harmonize_var_names}()},
 \code{\link{harmonize_waves}()},
 \code{\link{label_normalize}()},
 \code{\link{merge_waves}()},
-\code{\link{na_range_to_values}()}
+\code{\link{na_range_to_values}()},
+\code{\link{suggest_permanent_names}()},
+\code{\link{suggest_var_names}()}
 
 Other harmonization functions: 
 \code{\link{collect_val_labels}()},
 \code{\link{harmonize_na_values}()},
+\code{\link{harmonize_var_names}()},
 \code{\link{harmonize_waves}()},
 \code{\link{label_normalize}()},
 \code{\link{merge_waves}()},
-\code{\link{na_range_to_values}()}
+\code{\link{na_range_to_values}()},
+\code{\link{suggest_permanent_names}()},
+\code{\link{suggest_var_names}()}
 }
 \concept{harmonization functions}

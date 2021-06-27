@@ -14,6 +14,9 @@
 #' @param  name_orig The original name of the variable. If left \code{NULL}
 #' it uses the latest name of the object \code{x}.
 #' @param id A survey ID, defaults to \code{survey_id}
+#' @param remove Defaults to \code{NULL}.  A character or regex that will be removed from all
+#' old value labels, like \code{"\\("|\\)} for ( and ).
+#' @param perl Use perl-like regex? Defaults to {FALSE}.
 #' @importFrom labelled to_character labelled na_values val_labels
 #' @importFrom labelled var_label
 #' @importFrom tibble tibble 
@@ -57,25 +60,36 @@ harmonize_values <- function(
                 "inap" = 99999), 
   na_range = NULL,
   id = "survey_id",
-  name_orig = NULL ) {
+  name_orig = NULL, 
+  remove = NULL,
+  perl = FALSE ) {
   
-  new_values <- to <- from <- numeric_values <- NULL
   input_na_values <- na_values
   
   
   validate_label_list <- function ( label_list ) {
+    
+    ll_lengths <- vapply ( label_list, length, numeric(1))
+    
+    assertthat::assert_that(
+      length(unique (ll_lengths))==1, 
+      msg = paste0 ("The label_list elements must be of equal length, currently it is: ", 
+                    as.character( paste(ll_lengths, collapse = ", ")))
+    )
+    
     ll <- as_tibble ( label_list )
     
     for ( l in unique( label_list$to) ) {
       
       matched_numeric_value <-  ll %>%
-        filter ( to == l ) %>%
-        distinct ( to, numeric_values ) %>%
-        pull ( numeric_values )
+        filter ( .data$to == l ) %>%
+        distinct ( .data$to, .data$numeric_values ) %>%
+        pull ( .data$numeric_values )
       
       assert_that(length(matched_numeric_value)==1, 
                   msg = paste0("in harmonized_list ", 
-                               l, " is matched with multiple numeric values: <", paste(matched_numeric_value, collapse = ",") , ">")
+                               l, " is matched with multiple numeric values: <", 
+                               paste(matched_numeric_value, collapse = ",") , ">")
       )
       
     }
@@ -104,12 +118,18 @@ harmonize_values <- function(
   
   original_values <- tibble::tibble (
     x = vctrs::vec_data(x) )
-
-  original_values$orig_labels = if_else (
+  
+  original_values$orig_labels <- if_else (
     condition = original_values$x %in% labelled::val_labels(x), 
     true = as_character(x), 
     false = NA_character_
   )
+  
+  if (!is.null(remove)) {
+    harmonize_labels$from <- gsub(remove, "", harmonize_labels$from)
+    original_values$orig_labels <- gsub(remove, "", original_values$orig_labels)
+  }
+
   
   if (is.na_range_to_values(x)) {
     x <- na_range_to_values(x)
@@ -119,31 +139,41 @@ harmonize_values <- function(
     
     original_values$orig_labels <- if_else ( 
       #label == "" if not in the harmonization list
-      condition = grepl(paste ( harmonize_labels$from, collapse = "|"), 
-                   tolower(original_values$orig_labels)), 
+      condition = grepl(paste ( tolower(harmonize_labels$from), collapse = "|"), 
+                   tolower(original_values$orig_labels), perl = perl), 
       true = tolower(original_values$orig_labels), 
       false  = "") 
     
     code_table <- dplyr::distinct_all(original_values)
-    str <- code_table$orig_labels
+    str <- code_table$orig_labels  #string of original values
+    code_table$new_labels <- NA_character_
+    code_table$new_values <- NA_real_
     
-    for ( r in 1:length(harmonize_labels$to) ) {
-      ## harmonize the strings to new labelling by regex
-      str [which(grepl ( harmonize_labels$from[r], str))] <- harmonize_labels$to[r]
+    for ( o in seq_along (harmonize_labels$from )) { 
+      code_table$new_labels [which ( grepl ( tolower(harmonize_labels$from[o]), str))] <- harmonize_labels$to[o]
+      code_table$new_values [which ( grepl ( tolower(harmonize_labels$from[o]), str))] <- harmonize_labels$numeric_values[o]
+      }
+    
+    old_code <- function () {
+      
+      ## Can be removed after extensive testing -------
+      for ( r in seq_along (harmonize_labels$to) ) {
+        ## harmonize the strings to new labelling by regex
+        str [which(grepl ( tolower(harmonize_labels$from[r]), str, perl = perl))] <- harmonize_labels$to[r]
+      }
+    
+      add_new_values <- harmonize_labels %>%
+        as_tibble() %>%
+        dplyr::select ( tidyselect::all_of(
+          c("to", "numeric_values")) ) %>%
+        stats::setNames( c("new_labels", "new_values"))
+      
+      code_table <- dplyr::left_join ( 
+        code_table, 
+        add_new_values, 
+        by = "new_labels") %>%
+        filter ( !is.na(.data$new_values) )
     }
-    
-    code_table$new_labels <- str
-    
-    add_new_values <- harmonize_labels %>%
-      dplyr::select ( tidyselect::all_of(
-        c("to", "numeric_values")) ) %>%
-      stats::setNames( c("new_labels", "new_values"))
-    
-    code_table <- dplyr::left_join ( 
-      code_table, 
-      add_new_values, 
-      by = "new_labels") %>%
-      filter ( !is.na(new_values) )
     
     code_table$original_values <- NULL
     } else {
@@ -155,25 +185,25 @@ harmonize_values <- function(
       if ( length(na_labels)>0 ) {
         # if there is no valid label harmonization, still check for potential missings
         potential_na_values <- sapply (na_labels, function(x) paste0("^", x,"|",x))
-        na_regex <- sapply ( potential_na_values, function(s) grepl(s, val_label_normalize(code_table$new_labels)))
-        for (c in 1:length(na_labels)){
+        na_regex <- sapply ( potential_na_values, function(s) grepl(s, val_label_normalize(code_table$new_labels), perl = perl))
+        for (c in seq_along(na_labels) ){
           code_table$new_labels[which( na_regex[,c])] <- na_labels[c]
         }
       }
     }
   
-  code_table <- dplyr::arrange(.data =code_table, new_values )
+  code_table <- code_table %>% distinct_all %>% dplyr::arrange(.data$new_values )
   
   new_value_table <- original_values %>%
     dplyr::left_join (
       code_table, 
       by = c("x", "orig_labels")) %>%
     dplyr::mutate ( new_values = if_else (
-      condition = is.na(new_labels),
+      condition = is.na(.data$new_labels),
       true = x, 
-      false = new_values
+      false = .data$new_values
     )) %>%  #invalid labels should be treated elsewhere 
-    dplyr::arrange( new_values )
+    dplyr::arrange( .data$new_values )
   
   ## define new missing values, not with range
   new_na_values <- new_value_table$new_values[which(new_value_table$new_values >= 99900 )]
@@ -182,7 +212,7 @@ harmonize_values <- function(
   
   # define new value - label pairs
   new_labelling <- new_value_table %>%
-    dplyr::distinct ( new_values, new_labels ) 
+    dplyr::distinct ( .data$new_values, .data$new_labels ) 
   new_labels <- new_labelling$new_values
   names (new_labels) <- new_labelling$new_labels
   
@@ -195,7 +225,7 @@ harmonize_values <- function(
   
   # define original numeric code
   original_numerics <-  new_value_table %>%
-    dplyr::distinct ( new_values, x )
+    dplyr::distinct ( .data$new_values, .data$x )
   original_numeric_values <- original_numerics$new_values
   names(original_numeric_values) <- original_numerics$x
   

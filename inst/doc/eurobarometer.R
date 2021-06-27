@@ -21,15 +21,14 @@ eurobarometer_waves <- file.path(working_dir, dir(working_dir))
 eb_waves <- read_surveys(eurobarometer_waves, .f='read_rds')
 
 ## ----document-waves, eval=FALSE-----------------------------------------------
-#  documented_eb_waves <- document_waves (eb_waves)
+#  documented_eb_waves <- document_waves(eb_waves)
 
 ## ----metadata, eval=FALSE-----------------------------------------------------
-#  eb_trust_metadata <- lapply ( X = eb_waves, FUN = metadata_create   )
+#  eb_trust_metadata <- lapply ( X = eb_waves, FUN = metadata_create )
 #  eb_trust_metadata <- do.call(rbind, eb_trust_metadata)
-#  #let's keep the example managable:
+#  #let's keep the example manageable:
 #  eb_trust_metadata  <- eb_trust_metadata %>%
-#    filter ( grepl( "parliament|commission|rowid|weight_poststrat|country_id", var_name_orig ))
-#  
+#    filter ( grepl("parliament|commission|rowid|weight_poststrat|country_id", var_name_orig) )
 
 ## ----head---------------------------------------------------------------------
 head(eb_trust_metadata)
@@ -51,11 +50,12 @@ working_directory <- tempdir()
 #  # To replicate the worklist, you need to have the SPSS file names
 #  # as a list, and you have to set up your own import and export path.
 #  
-#  selected_eb_metadata <- readRDS(system.file("eurob", "selected_eb_waves.rds", package = "retroharmonize")) %>%
-#    mutate ( id = substr(filename,1,6)) %>%
-#    rename ( var_label = var_label_std) %>%
+#  selected_eb_metadata <- readRDS(
+#    system.file("eurob", "selected_eb_waves.rds", package = "retroharmonize")
+#    ) %>%
+#    mutate ( id = substr(filename,1,6) ) %>%
+#    rename ( var_label = var_label_std ) %>%
 #    mutate ( var_name = var_label )
-#  
 #  
 #  ## This code is not evaluated, it is only an example. You are likely
 #  ## to have a directory where you have already downloaded the data
@@ -66,7 +66,6 @@ working_directory <- tempdir()
 #    selection_name = "trust",
 #    import_path = gesis_dir,
 #    export_path = working_directory )
-#  
 
 ## ----specificfunction---------------------------------------------------------
 harmonize_eb_trust <- function(x) {
@@ -80,9 +79,9 @@ harmonize_eb_trust <- function(x) {
 
   harmonize_values(x, 
                    harmonize_labels = label_list, 
-                   na_values = c("do_not_know"=99997,
-                                 "declined"=99998,
-                                 "inap"=99999)
+                   na_values = c("do_not_know"= 99997,
+                                 "declined"   = 99998,
+                                 "inap"       = 99999 )
   )
 }
 

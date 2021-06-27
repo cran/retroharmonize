@@ -87,16 +87,26 @@ test_that("recasting works", {
 
 test_that("exception handling works", {
   ## tests validate_harmonize_values
-  expect_error (harmonize_values (var_1, 
+  expect_error(expect_warning ((harmonize_values (var_1, 
                                   # list not well defined
                                   harmonize_labels = list(
                                     wrong_from = c("a", "b"), 
                                     wrong_to = c("ab", "bc"))
-                                  )
+                                  )))
   )
   expect_error (harmonize_values (var_1, 
                                   # type mismatch
                                   harmonize_labels = c("a", "b"))
+  )
+  expect_error (harmonize_values (var_1, 
+                                  # inconsistent list length
+                                  harmonize_labels = list ( 
+                                    from = c("^tend\\sto|^trust", "^tend\\snot|not\\strust", "^dk|^don", "^inap"), 
+                                    to = c("trust", "not_trust", "do_not_know", "inap"),
+                                    numeric_values = c(1,0,3,99997, 99999)), 
+                                  na_values = c("do_not_know" = 99997,
+                                                "declined" = 99998,
+                                                "inap" = 99999))
   )
   expect_error (harmonize_values (
     x = lvar2, 
