@@ -39,7 +39,7 @@ collect_val_labels(eb_trust_metadata)
 ## ----missing-labels-----------------------------------------------------------
 collect_na_labels(eb_trust_metadata)
 
-## -----------------------------------------------------------------------------
+## ----tempdir------------------------------------------------------------------
 ## You will likely use your own local working directory, or
 ## tempdir() that will create a temporary directory for your 
 ## session only. 
@@ -91,16 +91,16 @@ harmonize_eb_trust <- function(x) {
 ## ---- echo=FALSE--------------------------------------------------------------
 documented_eb_waves
 
-## ---- check, eval=FALSE-------------------------------------------------------
+## ---- test-trust, eval=FALSE--------------------------------------------------
 #  test_trust <- pull_survey(eb_waves, filename = "ZA4414_trust.rds")
 
 ## ---- pulled-check------------------------------------------------------------
 test_trust$trust_european_commission[1:16]
 
 ## -----------------------------------------------------------------------------
-harmonize_eb_trust(test_trust$trust_european_commission[1:16])
+harmonize_eb_trust(x=test_trust$trust_european_commission[1:16])
 
-## -----------------------------------------------------------------------------
+## ----ebwavesselected----------------------------------------------------------
 eb_waves_selected <- lapply ( eb_waves, function(x) x %>% select ( 
   any_of (c("rowid", "country_id", "weight_poststrat", 
             "trust_national_parliament", "trust_european_commission", 
@@ -114,7 +114,7 @@ eb_waves_selected <- lapply ( eb_waves, function(x) x %>% select (
 #    waves = eb_waves_selected,
 #    .f = harmonize_eb_trust )
 
-## -----------------------------------------------------------------------------
+## ----wavesattributes----------------------------------------------------------
 wave_attributes <- attributes(harmonized_eb_waves)
 wave_attributes$id
 wave_attributes$filename
@@ -130,8 +130,9 @@ numeric_harmonization <- harmonized_eb_waves %>%
   mutate_at ( vars(contains("trust")), as_numeric )
 summary(numeric_harmonization)
 
-## -----------------------------------------------------------------------------
+## ----numericharmonization-----------------------------------------------------
 numeric_harmonization %>%
   group_by(country_id) %>%
-  summarize_at ( vars(contains("trust")), list(~mean(.*weight_poststrat, na.rm=TRUE))) 
+  summarize_at ( vars(contains("trust")), 
+                 list(~mean(.*weight_poststrat, na.rm=TRUE))) 
 

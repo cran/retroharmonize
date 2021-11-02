@@ -2,7 +2,7 @@
 % Please edit documentation in R/suggest_var_names.R
 \name{suggest_permanent_names}
 \alias{suggest_permanent_names}
-\title{Suggest Permanent Names}
+\title{Suggest permanent names}
 \usage{
 suggest_permanent_names(survey_program = "eurobarometer")
 }
@@ -28,10 +28,7 @@ Other harmonization functions:
 \code{\link{harmonize_na_values}()},
 \code{\link{harmonize_values}()},
 \code{\link{harmonize_var_names}()},
-\code{\link{harmonize_waves}()},
 \code{\link{label_normalize}()},
-\code{\link{merge_waves}()},
-\code{\link{na_range_to_values}()},
 \code{\link{suggest_var_names}()}
 }
 \concept{harmonization functions}

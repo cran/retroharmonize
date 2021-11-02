@@ -3,6 +3,7 @@ title: 'Case Study: Working With Arab Barometer Surveys'
 output: rmarkdown::html_vignette
 author:
 - Daniel Antal
+- Yousef Ibrahim
 - Ahmed Shaibani
 date: "`r Sys.Date()`"
 resource_files:
@@ -240,7 +241,7 @@ Let's take a look at the variables:
 lapply (merged_ab_elections, names)
 ```
 
-The variable harmonization took place, but the variable names are not very practical for programmatic use. We apply snakecase variable naming:
+The variable harmonization took place, but the variable names are not very practical for programmatic use. We apply `snakecase` variable naming:
 
 ```{r snakecase, message=FALSE}
 library(snakecase)
@@ -616,7 +617,7 @@ Daniel Antal, & Ahmed Shaibani. (2021). Replication Data for the retroharmonize 
 
 ### Citing the data sources
 
-Arab Baromeeter data: cite [Arab Barometer](https://www.arabbarometer.org/survey-data/data-downloads/).
+Arab Barometer data: cite [Arab Barometer](https://www.arabbarometer.org/survey-data/data-downloads/).
 
 
 ### Citing the retroharmonize R package
@@ -639,7 +640,7 @@ For contact information, see the [package](https://retroharmonize.dataobservator
 
 Daniel Antal, & Ahmed Shaibani. (2021, June 26). Case Study: Working With Arab Barometer Surveys for the retroharmonize R package (Version 0.1.6). Zenodo. [https://doi.org/10.5281/zenodo.5034759](https://doi.org/10.5281/zenodo.5034759)
 
-This tutorial was created in the following environment, and can be downloaded in PDF format from [10.5281/zenodo.5034759](https://doi.org/10.5281/zenodo.5034759) :
+This tutorial was created in the following environment, and can be downloaded in PDF format from [10.5281/zenodo.5034759](https://doi.org/10.5281/zenodo.5034759):
 
 ```{r sessioninfo, message=FALSE, warning=FALSE}
 sessionInfo()

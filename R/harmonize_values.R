@@ -19,12 +19,13 @@
 #' @param perl Use perl-like regex? Defaults to {FALSE}.
 #' @importFrom labelled to_character labelled na_values val_labels
 #' @importFrom labelled var_label
-#' @importFrom tibble tibble 
+#' @importFrom tibble tibble as_tibble
 #' @importFrom dplyr mutate left_join distinct select if_else
 #' @importFrom tidyselect all_of
 #' @importFrom haven labelled_spss
 #' @importFrom assertthat assert_that
-#' @family harmonization functions
+#' @importFrom rlang set_names .data
+#' @family variable label harmonization functions
 #' @return A labelled vector that contains in its metadata attributes
 #' the original labelling, the original numeric coding and the current
 #' labelling, with the numerical values representing the harmonized
@@ -64,20 +65,33 @@ harmonize_values <- function(
   remove = NULL,
   perl = FALSE ) {
   
-  input_na_values <- na_values
-  
+  if ( is.null(na_values)[1]|is.na(na_values)[1]) {
+    if ( "na_values" %in% names( harmonize_labels) ) {
+      input_na_values <- na_values
+      harmonize_labels <- harmonize_labels[c("from", "to", "numeric_values")]
+    }
+  } else {
+    #what if there are no na_values given?
+    input_na_values <- na_values
+    harmonize_labels <- harmonize_labels[c("from", "to", "numeric_values")]
+  } 
   
   validate_label_list <- function ( label_list ) {
     
-    ll_lengths <- vapply ( label_list, length, numeric(1))
+    assert_that( 
+      all(c("from", "to", "numeric_values") %in% names (label_list)),
+      msg = "The harmonize_labels list must have 'from', 'to', and 'numeric_values' vectors."
+      )
     
-    assertthat::assert_that(
+    ll_lengths <- vapply ( label_list[c("from", "to", "numeric_values")], length, numeric(1))
+    
+    assert_that(
       length(unique (ll_lengths))==1, 
-      msg = paste0 ("The label_list elements must be of equal length, currently it is: ", 
+      msg = paste0 ("The 'from', 'to', and 'numeric_values' vectors must be of equal length, currently it is: ", 
                     as.character( paste(ll_lengths, collapse = ", ")))
     )
     
-    ll <- as_tibble ( label_list )
+    ll <- as_tibble (label_list[c("from", "to", "numeric_values")])
     
     for ( l in unique( label_list$to) ) {
       
@@ -94,8 +108,8 @@ harmonize_values <- function(
       
     }
   }
-  
-  if (!is.null(harmonize_labels)) validate_label_list(harmonize_labels)
+
+  if (!is.null(harmonize_labels)) validate_label_list(label_list = harmonize_labels)
   
   if (is.null(id)) { 
     # if not otherwise stated, inherit the ID of x, if present
@@ -112,8 +126,9 @@ harmonize_values <- function(
   if (is.null(harmonize_label)) harmonize_label <- labelled::var_label(x)
   if (is.null(harmonize_label)) harmonize_label <- original_x_name
   
-  if ( !is.null(harmonize_labels)) {
-    harmonize_labels <- validate_harmonize_labels(harmonize_labels)  ## see below main function
+  if ( !is.null(harmonize_labels) & validate_harmonize_labels(harmonize_labels) ) { ## see assertions.R
+    harmonize_labels <- tibble::as_tibble(harmonize_labels)  %>%
+      select( all_of(c("from", "to", "numeric_values")))
   }
   
   original_values <- tibble::tibble (
@@ -166,7 +181,7 @@ harmonize_values <- function(
         as_tibble() %>%
         dplyr::select ( tidyselect::all_of(
           c("to", "numeric_values")) ) %>%
-        stats::setNames( c("new_labels", "new_values"))
+        rlang::set_names( c("new_labels", "new_values"))
       
       code_table <- dplyr::left_join ( 
         code_table, 
@@ -205,16 +220,31 @@ harmonize_values <- function(
     )) %>%  #invalid labels should be treated elsewhere 
     dplyr::arrange( .data$new_values )
   
-  ## define new missing values, not with range
-  new_na_values <- new_value_table$new_values[which(new_value_table$new_values >= 99900 )]
-  new_na_values <- unique(new_na_values)
-  new_na_values <- union(input_na_values, new_na_values)
   
+  original_values$x
+  ## define new missing values, not with range
+  ## A message should be given, these are just suspected to be missing
+  new_na_values <- new_value_table$new_values[which(new_value_table$new_values >= 99900 )]
+  
+  if (!is.null(na_values) & length(na_values)>0) {
+    potential_na_values <- original_values$x[which(original_values$x %in% as.numeric(na_values) )]
+    if (length(potential_na_values )>0) warning("There are values original values in the states new NA range. Make sure that these are not accidentally labelled as missing.\n")
+  }
+  
+  
+  new_na_values <- input_na_values
+   
   # define new value - label pairs
   new_labelling <- new_value_table %>%
     dplyr::distinct ( .data$new_values, .data$new_labels ) 
   new_labels <- new_labelling$new_values
   names (new_labels) <- new_labelling$new_labels
+  
+  new_labelling <-  new_labelling %>%
+    mutate ( new_labels = ifelse(is.na(.data$new_labels), 
+                                 ifelse(.data$new_values %in% input_na_values, 
+                                        names(input_na_values), .data$new_labels), 
+                                 .data$new_labels))
   
   #define original labelling 
   original_labelling <- new_value_table %>%
@@ -230,9 +260,14 @@ harmonize_values <- function(
   names(original_numeric_values) <- original_numerics$x
   
   # create new numerics
-  new_numerics <- 
-    tibble::tibble( x = original_values$x ) %>%
+  new_numerics <- tibble::tibble( x = original_values$x ) %>%
     dplyr::left_join (original_numerics, by = 'x' )
+  
+  #ifelse ( is.null(labelled::na_values(x)), 
+  #         na_values, 
+  #         c())
+
+  na_value_labels <- na_values
 
   return_value <- labelled_spss_survey(
     x = new_numerics$new_values,
@@ -244,15 +279,19 @@ harmonize_values <- function(
     name_orig = original_x_name )
   
   add_to_value_range <- (!harmonize_labels$to %in% new_labelling$new_labels)
-  further_labels <- harmonize_labels$numeric_values[add_to_value_range ]
-  names(further_labels) <- harmonize_labels$to[add_to_value_range ]
+  further_valid_labels <- harmonize_labels$numeric_values[add_to_value_range]
+  names(further_valid_labels) <- harmonize_labels$to[add_to_value_range]
   
-  new_total_labels <- sort(c( new_labels, further_labels,
-                              input_na_values[which( !input_na_values %in% new_labelling$new_labels)] ))
+  new_valid_range_labels <- sort(
+    c( new_labels, 
+       further_valid_labels,
+       input_na_values[which( !input_na_values %in% new_labelling$new_labels)] ))
 
-  new_total_labels2 <- new_total_labels[unique(names(new_total_labels))]
-
-  attr(return_value, "labels") <- new_total_labels2[!is.na(new_total_labels2)]
+  new_valid_range_labels_2 <- new_valid_range_labels[unique(names(new_valid_range_labels))]
+  new_valid_range_labels_3 <- new_valid_range_labels_2[!is.na(new_valid_range_labels_2)]
+  new_valid_range_labels_3 
+  
+  attr(return_value, "labels") <- new_valid_range_labels_3 
   attr(return_value, "na_values") <- unique(new_na_values)
   attr(return_value, paste0(attr(return_value, "id"), "_values")) <- original_numeric_values
   
@@ -263,45 +302,8 @@ harmonize_values <- function(
   
 }
 
-#' @importFrom dplyr select
-#' @importFrom tidyselect all_of
-#' @importFrom tibble as_tibble
-#' @keywords  internal
-validate_harmonize_labels <- function( harmonize_labels ) {
-  
-  if( inherits(harmonize_labels, "list") ) {
-    if ( "numeric_value" %in% names(harmonize_labels) ) {
-      names(harmonize_labels)[which(names(harmonize_labels)=="numeric_value")] <- "numeric_values"
-    }
-    
-  if( !all( 
-    sort (names ( harmonize_labels )) 
-    == c("from", "numeric_values", "to")) ) {
-      stop( "<harmonize_label> must have <from>, <to>, <numeric_values> of equal lengths.")
-    }
-    
-  if(length(
-    unique(vapply(harmonize_labels, length, integer(1)))
-    ) !=1) {
-      stop("<harmonize_label> must have <from>, <to>, <numeric_values> of equal lengths.")
-    }
-  } else if ( inherits(harmonize_labels, "data.frame") ) {
-    if(!all(sort (names ( harmonize_labels )) == c("from", "numeric_values", "to"))) {
-      stop( "<harmonize_label> must have <from>, <to>, <numeric_values>.")
-    }
-  } else {
-    stop("<harmonize label> must have <from>, <to>, <numeric_values> of equal lengths as list or data.frame.")
-  }
-  harmonize_labels <- tibble::as_tibble(harmonize_labels)
-  
-  assertthat::assert_that(is.numeric(harmonize_labels$numeric_values) |
-                            is.null(harmonize_labels$numeric_values))
-  
-  dplyr::select (harmonize_labels, 
-                 tidyselect::all_of(c("from", "to", "numeric_values")))
-}
-
 #' @importFrom dplyr distinct_all
+#' @keywords internal
 get_labelled_attributes <- function(x) {
   
   unlabelled_x <- sapply(attributes(x), function(i) { attributes(i) <- NULL; x })[,1]

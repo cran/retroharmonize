@@ -3,25 +3,30 @@
 \name{survey}
 \alias{survey}
 \alias{is.survey}
+\alias{summary.survey}
 \title{Survey data frame}
 \usage{
 survey(
-  df = data.frame(),
+  object = data.frame(),
   id = character(),
   filename = character(),
   doi = character()
 )
 
-is.survey(df)
+is.survey(object)
+
+\method{summary}{survey}(object, ...)
 }
 \arguments{
-\item{df}{A tibble or data frame that contains the survey data.}
+\item{object}{A tibble or data frame that contains the survey data.}
 
 \item{id}{A mandatory identifier for the survey}
 
 \item{filename}{The import file name.}
 
 \item{doi}{Optional doi, can be omitted.}
+
+\item{...}{Arguments passed to summary method.}
 }
 \value{
 A tibble with \code{id},  \code{filename},  \code{doi} 
@@ -33,7 +38,7 @@ survey identifier, import filename, and optional doi.
 }
 \examples{
 example_survey <- survey( 
-  df =data.frame ( 
+  object =data.frame ( 
     rowid = 1:6,
     observations = runif(6)), 
   id = 'example', 

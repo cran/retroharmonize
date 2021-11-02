@@ -285,7 +285,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;retroharmonize_labelled_spss_survey&quot; &quot;haven_labelled_spss&quot;                </span></span>
 <span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3] &quot;haven_labelled&quot;</span></span></code></pre></div>
 <p>After performing harmonization, it would look like this:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">harmonize_eb_trust</span>(test_trust<span class="sc">$</span>trust_european_commission[<span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>])</span>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">harmonize_eb_trust</span>(<span class="at">x=</span>test_trust<span class="sc">$</span>trust_european_commission[<span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>])</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] 99997     1     0 99997     1     0     0     0     1 99997     1     1</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [13]     1     1     1     1</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; attr(,&quot;labels&quot;)</span></span>
@@ -382,17 +382,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Finally, let’s calculate weighted means of trust in the national parliament, the European Parliament, and the European Commission, for the selected countries, across all EB waves.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>numeric_harmonization <span class="sc">%&gt;%</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(country_id) <span class="sc">%&gt;%</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_at</span> ( <span class="fu">vars</span>(<span class="fu">contains</span>(<span class="st">&quot;trust&quot;</span>)), <span class="fu">list</span>(<span class="sc">~</span><span class="fu">mean</span>(.<span class="sc">*</span>weight_poststrat, <span class="at">na.rm=</span><span class="cn">TRUE</span>))) </span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 7 x 4</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   country_id trust_national_parlia~ trust_european_commis~ trust_european_parli~</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                       &lt;dbl&gt;                  &lt;dbl&gt;                 &lt;dbl&gt;</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 BE                          0.453                  0.610                 0.623</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 HU                          0.328                  0.639                 0.642</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 IT                          0.317                  0.603                 0.630</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 MT                          0.568                  0.753                 0.754</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 NL                          0.657                  0.664                 0.635</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 PL                          0.225                  0.658                 0.642</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7 SK                          0.294                  0.613                 0.641</span></span></code></pre></div>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_at</span> ( <span class="fu">vars</span>(<span class="fu">contains</span>(<span class="st">&quot;trust&quot;</span>)), </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                 <span class="fu">list</span>(<span class="sc">~</span><span class="fu">mean</span>(.<span class="sc">*</span>weight_poststrat, <span class="at">na.rm=</span><span class="cn">TRUE</span>))) </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 7 x 4</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   country_id trust_national_parliament trust_european_comm~ trust_european_parl~</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                          &lt;dbl&gt;                &lt;dbl&gt;                &lt;dbl&gt;</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 BE                             0.453                0.610                0.623</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 HU                             0.328                0.639                0.642</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 IT                             0.317                0.603                0.630</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 MT                             0.568                0.753                0.754</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 NL                             0.657                0.664                0.635</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 PL                             0.225                0.658                0.642</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7 SK                             0.294                0.613                0.641</span></span></code></pre></div>
 </div>
 
 

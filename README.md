@@ -1,18 +1,22 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# retroharmonize
+# retroharmonize <a href='https://ropengov.github.io/retroharmonize/'><img src='man/figures/logo.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
 
+[![rOG-badge](https://ropengov.github.io/rogtemplate/reference/figures/ropengov-badge.svg)](http://ropengov.org/)
 [![Project Status: Active. The project has reached a stable, usable
 state and is being actively
-developed..](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![license](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5034752.svg)](https://doi.org/10.5281/zenodo.5034752)
-[![Codecov test
-coverage](https://codecov.io/gh/antaldaniel/retroharmonize/branch/master/graph/badge.svg)](https://codecov.io/gh/antaldaniel/retroharmonize?branch=master)
-[![R-CMD-check](https://github.com/antaldaniel/retroharmonize/workflows/R-CMD-check/badge.svg)](https://github.com/rOpenGov/retroharmonize/actions)
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/retroharmonize)](https://cran.r-project.org/package=retroharmonize)
+[![CRAN\_time\_from\_release](https://www.r-pkg.org/badges/ago/retroharmonize)](https://cran.r-project.org/package=retroharmonize)
+[![metacran
+downloads](https://cranlogs.r-pkg.org/badges/retroharmonize)](https://cran.r-project.org/package=retroharmonize)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5639435.svg)](https://doi.org/10.5281/zenodo.5639435)
+[![codecov](https://codecov.io/gh/ropengov/retroharmonize/branch/master/graph/badge.svg?token=ShTTeqB5kL)](https://app.codecov.io/gh/ropengov/retroharmonize)
+[![R-CMD-check](https://github.com/rOpenGov/retroharmonize/workflows/R-CMD-check/badge.svg)](https://github.com/rOpenGov/retroharmonize/actions)
 [![Follow
 author](https://img.shields.io/twitter/follow/antaldaniel.svg?style=social)](https://twitter.com/intent/follow?screen_name=antaldaniel)
 [![Follow
@@ -38,19 +42,16 @@ The package is available on [CRAN](https://CRAN.R-project.org):
 install.packages("retroharmonize")
 ```
 
-The development version has some small improvements in functionality and
-minor documentation updates. It can be installed from
-[GitHub](https://github.com/) with:
+The development version has new features with the `create_codebook()`
+functions. It can be installed from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("antaldaniel/retroharmonize")
+devtools::install_github("rOpenGov/retroharmonize")
 ```
 
-You can download the manual in PDF for the [0.1.13 CRAN
-release](https://retroharmonize.dataobservatory.eu/retroharmonize_0.1.13.pdf)
-and for the [0.1.16 development
-release](https://retroharmonize.dataobservatory.eu/retroharmonize_0.1.16.pdf).
+You can download the manual in PDF for the [0.2.0
+release](https://retroharmonize.dataobservatory.eu/retroharmonize_0.2.0.pdf).
 
 ## Retrospective data harmonization
 
@@ -111,10 +112,10 @@ from cross-national surveys:
 -   [Eurobarometer](https://retroharmonize.dataobservatory.eu/articles/eurobarometer.html)
 
 The creators of `retroharmonize` are not affiliated with either
-Afrobarometer, Eurobarometer, or the organizations that designs,
-produces or archives their surveys.
+Afrobarometer, Arab Barometer, Eurobarometer, or the organizations that
+designs, produces or archives their surveys.
 
-We started building an experimental APIs data is running regions
+We started building an experimental APIs data is running retroharmonize
 regularly and improving known statistical data sources. See: [Digital
 Music Observatory](https://music.dataobservatory.eu/), [Green Deal Data
 Observatory](https://greendeal.dataobservatory.eu/), [Economy Data
@@ -159,8 +160,9 @@ citation("retroharmonize")
 #> To cite package 'retroharmonize' in publications use:
 #> 
 #>   Daniel Antal (2021). retroharmonize: Ex Post Survey Data
-#>   Harmonization. R package version 0.1.16.
-#>   https://retroharmonize.dataobservatory.eu/
+#>   Harmonization. https://retroharmonize.dataobservatory.eu/,
+#>   https://ropengov.github.io/retroharmonize/,
+#>   https://github.com/rOpenGov/retroharmonize.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -168,8 +170,9 @@ citation("retroharmonize")
 #>     title = {retroharmonize: Ex Post Survey Data Harmonization},
 #>     author = {Daniel Antal},
 #>     year = {2021},
-#>     note = {R package version 0.1.16},
-#>     url = {https://retroharmonize.dataobservatory.eu/},
+#>     note = {https://retroharmonize.dataobservatory.eu/,
+#> https://ropengov.github.io/retroharmonize/,
+#> https://github.com/rOpenGov/retroharmonize},
 #>   }
 ```
 

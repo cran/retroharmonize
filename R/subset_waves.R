@@ -10,8 +10,6 @@
 #' wave of surveys. Defaults to \code{NULL} in which case it returns all variables without subsetting.
 #' @importFrom dplyr select
 #' @importFrom tidyselect any_of
-#' @importFrom purrr set_names
-#' @importFrom assertthat assert_that
 #' @return The list of surveys with harmonized variable names.
 #' @examples
 #' examples_dir <- system.file("examples", package = "retroharmonize")
@@ -21,8 +19,7 @@
 #'   file.path( examples_dir, survey_list), 
 #'   save_to_rds = FALSE)
 
-#' metadata <- lapply ( X = example_surveys, FUN = metadata_create )
-#' metadata <- do.call(rbind, metadata)
+#' metadata <- metadata_waves_create(example_surveys)
 #' 
 #' metadata$var_name_suggested <- label_normalize(metadata$var_name)
 #' 

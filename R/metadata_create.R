@@ -1,8 +1,13 @@
-#' Create a metadata table
+#' @title Create a metadata table
 #' 
-#' Create a metadata table from the survey data files.
+#' @description Create a metadata table from the survey data files.
 #' 
-#' @details The structure of the returned tibble:
+#' @details A data frame like tibble ojbect is returned. 
+#' In case you are working with a list of surveys (waves), call 
+#' \code{\link{metadata_waves_create}}, which is a wrapper around 
+#' a list of  \code{\link{metadata_create}} calls.
+#' 
+#' The structure of the returned tibble:
 #' \describe{
 #'   \item{filename}{The original file name; if present; \code{missing}, if a non-\code{\link{survey}} data frame is used as input \code{survey}.}
 #'   \item{id}{The ID of the survey, if present; \code{missing}, if a non-\code{\link{survey}} data frame is used as input \code{survey}.}
@@ -27,6 +32,7 @@
 #' @importFrom purrr map
 #' @importFrom assertthat assert_that
 #' @importFrom rlang .data
+#' @family metadata functions
 #' @return A nested data frame with metadata and the range of 
 #' labels, na_values and the na_range itself.
 #' @examples
@@ -44,19 +50,25 @@ metadata_create <- function( survey ) {
               msg = "Parameter 'survey' must be of s3 class survey. See ?is.survey.")
   
   filename <- attr(survey, "filename")
+  
   if (is.null(filename)) filename <- "unknown"
   id <- attr(survey, "id")
   if (is.null(id)) id <- "missing"
   
-  label_orig <- as.character(
-    sapply(survey, labelled::var_label)
-    )
+  if( ncol(survey) == 0) {
+    # Special case when file could not be read and survey is empty
+    return(metadata_initialize(filename = filename, id = paste0(filename, " could not be read.")))
+  }
+  
+  label_orig  <- lapply ( survey, labelled::var_label )
+  
+  class_orig <- vapply( survey, function(x) class(x)[1], character(1))
   
   metadata <- tibble::tibble (
     filename = filename, 
     id = id,
     var_name_orig = names(survey), 
-    class_orig =  as.character(sapply( survey, function(x) class(x)[1])), 
+    class_orig =  class_orig, 
     label_orig = ifelse ( vapply(label_orig, is.null, logical(1)), 
                           "", 
                           unlist(label_orig)) %>%
@@ -106,6 +118,7 @@ metadata_create <- function( survey ) {
   range_df$n_labels <- vapply(1:nrow(range_df), function(x) label_length(range_df$labels[x]), numeric(1))
   range_df$n_valid_labels <- vapply(1:nrow(range_df), function(x) label_length(range_df$valid_labels[x]), numeric(1))
   range_df$n_na_labels <- vapply(1:nrow(range_df), function(x) label_length(range_df$na_labels[x]), numeric(1))
+  
 
   return_df <- metadata %>%
     dplyr::left_join ( range_df %>% 
@@ -119,5 +132,73 @@ metadata_create <- function( survey ) {
              n_labels = as.numeric(.data$n_labels)) %>%
     as.data.frame()
   
-  return_df
+  change_label_to_empty <- function() {
+    "none" = NA_real_
+  }
+  ## Avoid the accidental creation of empty CHARACTER lists, because they do not bind with 
+  ## numeric lists. 
+  
+  return_df$label_type <- vapply(return_df$labels, function(x) class(x)[1], character(1))
+  return_dflabels <- ifelse (return_df$label_type == "character" & return_df$n_labels ==0 , 
+                             yes = change_label_to_empty(), 
+                             no =  return_df$labels )
+  return_df$valid_labels <- ifelse (return_df$label_type == "character" & return_df$n_labels ==0 , 
+                                   yes = change_label_to_empty(), 
+                                   no =  return_df$valid_labels )
+  return_df$na_labels <- ifelse (return_df$label_type == "character" & return_df$n_labels == 0 , 
+                                yes = change_label_to_empty(), 
+                                no =  return_df$na_labels )
+  
+  return_df %>%
+    select ( -.data$label_type )
 }
+
+#' @title Create a metadata table from several surveys
+#' @rdname metadata_create
+#' @param survey_list A list containing surveys of class survey.
+#' @family metadata functions
+#' @examples
+#' examples_dir <- system.file( "examples", package = "retroharmonize")
+#'
+#' my_rds_files <- dir( examples_dir)[grepl(".rds", 
+#'                                         dir(examples_dir))]
+#'
+#' example_surveys <- read_surveys(file.path(examples_dir, my_rds_files))
+#' metadata_waves_create (example_surveys)
+#' @export
+
+metadata_waves_create <- function ( survey_list ) {
+  
+  validate_survey_list( survey_list)
+  
+  metadata_list <- lapply ( survey_list, metadata_create )
+
+  do.call ( rbind, metadata_list )
+  
+}
+
+#' @title Initialize a metadata data frame
+#'
+#' @inheritParams metadata_create
+#' @importFrom tibble tibble
+#' @return A nested data frame with metadata and the range of 
+#' labels, na_values and the na_range itself.
+#' @keywords internal
+metadata_initialize <- function (filename, id ){
+  
+  tibble::tibble ( 
+    filename = filename, 
+    id = id, 
+    class_orig = NA_character_,
+    var_name_orig = NA_character_, 
+    label_orig   = NA_character_, 
+    labels       = NA_character_, 
+    valid_labels = list("none" = NA_real_),
+    na_labels = list("none" = NA_real_),
+    na_range = list("none" = NA_real_),
+    n_labels = 0,
+    n_valid_labels = 0,
+    n_na_labels = 0 )  
+  
+}
+

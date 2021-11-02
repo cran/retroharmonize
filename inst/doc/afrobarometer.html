@@ -157,7 +157,7 @@ Round 7: <code>r7_merged_data_34ctry.release.sav</code></p>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="do">### use here your own directory</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ab <span class="ot">&lt;-</span> <span class="fu">dir</span> ( afrobarometer_dir )</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ab <span class="ot">&lt;-</span> <span class="fu">dir</span> ( afrobarometer_dir, <span class="at">pattern =</span> <span class="st">&quot;sav$&quot;</span> )</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>afrobarometer_rounds <span class="ot">&lt;-</span> <span class="fu">file.path</span>(afrobarometer_dir, ab)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>ab_waves <span class="ot">&lt;-</span> <span class="fu">read_surveys</span>(afrobarometer_rounds, <span class="at">.f=</span><span class="st">&#39;read_spss&#39;</span>)</span></code></pre></div>
@@ -169,11 +169,11 @@ Round 7: <code>r7_merged_data_34ctry.release.sav</code></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>documented_ab_waves <span class="ot">&lt;-</span> <span class="fu">document_waves</span>(ab_waves)</span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(documented_ab_waves)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 x 5</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   id           filename                                   ncol  nrow object_size</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;                                     &lt;int&gt; &lt;int&gt;       &lt;dbl&gt;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Afrobaromet~ merged-round-5-data-34-countries-2011-20~   349 51587   159027592</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Afrobaromet~ merged_r6_data_2016_36countries2.sav        365 53935   172064576</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Afrobaromet~ r7_merged_data_34ctry.release.sav           367 45823   148759488</span></span></code></pre></div>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   id               filename                               ncol  nrow object_size</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;            &lt;chr&gt;                                 &lt;int&gt; &lt;int&gt;       &lt;dbl&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Afrobarometer_R5 merged-round-5-data-34-countries-201~   349 51587   159027592</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Afrobarometer_R6 merged_r6_data_2016_36countries2.sav    365 53935   172064576</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Afrobarometer_R7 r7_merged_data_34ctry.release.sav       367 45823   148759488</span></span></code></pre></div>
 <p>Create a metadata table, or a data map, that contains information about the variable names and labels, and where each row correspnds to one variable in the survey data file. We do this with the function <code>metadata_create()</code>, which extracts the metadata from the survery data files, normalizes variable labels, identifies ranges of substantive responses and missing value codes.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ab_metadata <span class="ot">&lt;-</span> <span class="fu">lapply</span> ( <span class="at">X =</span> ab_waves, <span class="at">FUN =</span> metadata_create )</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ab_metadata <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, ab_metadata)</span></code></pre></div>
@@ -235,11 +235,11 @@ Round 7: <code>r7_merged_data_34ctry.release.sav</code></p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>documenteded_merged_ab <span class="ot">&lt;-</span> <span class="fu">document_waves</span>(merged_ab)</span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(documenteded_merged_ab)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 x 5</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   id           filename                                   ncol  nrow object_size</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;                                     &lt;int&gt; &lt;int&gt;       &lt;dbl&gt;</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Afrobaromet~ merged-round-5-data-34-countries-2011-20~     6 51587    11570496</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Afrobaromet~ merged_r6_data_2016_36countries2.sav          8 53935     8652392</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Afrobaromet~ r7_merged_data_34ctry.release.sav             8 45823     7353968</span></span></code></pre></div>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   id               filename                               ncol  nrow object_size</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;            &lt;chr&gt;                                 &lt;int&gt; &lt;int&gt;       &lt;dbl&gt;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Afrobarometer_R5 merged-round-5-data-34-countries-201~     6 51587    11570496</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Afrobarometer_R6 merged_r6_data_2016_36countries2.sav      8 53935     8652392</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Afrobarometer_R7 r7_merged_data_34ctry.release.sav         8 45823     7353968</span></span></code></pre></div>
 </div>
 <div id="harmonization" class="section level2">
 <h2>Harmonization</h2>
@@ -290,15 +290,15 @@ Round 7: <code>r7_merged_data_34ctry.release.sav</code></p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">document_survey_item</span>(R6<span class="sc">$</span>trust_president)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $code_table</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 7 x 5</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   values Afrobarometer_R6_va~ labels             Afrobarometer_R6_labels missing</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;                &lt;dbl&gt; &lt;chr&gt;              &lt;chr&gt;                   &lt;lgl&gt;  </span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     -1                   -1 Missing            Missing                 FALSE  </span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2      0                    0 Not at all         Not at all              FALSE  </span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3      1                    1 Just a little      Just a little           FALSE  </span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4      2                    2 Somewhat           Somewhat                FALSE  </span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5      3                    3 A lot              A lot                   FALSE  </span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6      9                    9 Don’t know/ Haven~ Don’t know/ Haven&#39;t he~ FALSE  </span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7     98                   98 Refused            Refused                 FALSE  </span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   values Afrobarometer_R6_values labels           Afrobarometer_R6_labe~ missing</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;                   &lt;dbl&gt; &lt;chr&gt;            &lt;chr&gt;                  &lt;lgl&gt;  </span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     -1                      -1 Missing          Missing                FALSE  </span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2      0                       0 Not at all       Not at all             FALSE  </span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3      1                       1 Just a little    Just a little          FALSE  </span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4      2                       2 Somewhat         Somewhat               FALSE  </span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5      3                       3 A lot            A lot                  FALSE  </span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6      9                       9 Don’t know/ Hav~ Don’t know/ Haven&#39;t h~ FALSE  </span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7     98                      98 Refused          Refused                FALSE  </span></span>
 <span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $history_var_name</span></span>
 <span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                  name Afrobarometer_R6_name </span></span>
@@ -393,25 +393,25 @@ Round 7: <code>r7_merged_data_34ctry.release.sav</code></p>
 <span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize_if</span> ( is.numeric, mean, <span class="at">na.rm=</span><span class="cn">TRUE</span> ) </span>
 <span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 17 x 7</span></span>
 <span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # Groups:   country [5]</span></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    country    year trust_key_leadership_fi~ trust_parliament_na~ trust_president</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;     &lt;int&gt;                    &lt;dbl&gt;                &lt;dbl&gt;           &lt;dbl&gt;</span></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 Algeria    2013                     2.59                 1.70          NaN   </span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 Algeria    2015                   NaN                    1.82            2.00</span></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 Madagasc~  2013                     1.96               NaN             NaN   </span></span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 Madagasc~  2014                   NaN                    1.75            1.95</span></span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 Madagasc~  2015                   NaN                    1.94            2.15</span></span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 Madagasc~  2018                   NaN                    1.71            1.83</span></span>
-<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 Niger      2013                     2.59                 2.52          NaN   </span></span>
-<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 Niger      2015                   NaN                    2.43            2.64</span></span>
-<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 Niger      2018                   NaN                    2.31            2.42</span></span>
-<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 Nigeria    2012                     1.59                 1.43          NaN   </span></span>
-<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11 Nigeria    2013                     1.59                 1.84          NaN   </span></span>
-<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12 Nigeria    2014                   NaN                    1.45            1.64</span></span>
-<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13 Nigeria    2015                   NaN                    1.15            1.30</span></span>
-<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14 Nigeria    2017                   NaN                    1.57            2.06</span></span>
-<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15 South Af~  2011                     2.04                 1.84          NaN   </span></span>
-<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16 South Af~  2015                   NaN                    1.82            1.87</span></span>
-<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 17 South Af~  2018                   NaN                    1.70            1.86</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    country       year trust_key_leadership_~ trust_parliament_n~ trust_president</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;        &lt;int&gt;                  &lt;dbl&gt;               &lt;dbl&gt;           &lt;dbl&gt;</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 Algeria       2013                   2.59                1.70          NaN   </span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 Algeria       2015                 NaN                   1.82            2.00</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 Madagascar    2013                   1.96              NaN             NaN   </span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 Madagascar    2014                 NaN                   1.75            1.95</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 Madagascar    2015                 NaN                   1.94            2.15</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 Madagascar    2018                 NaN                   1.71            1.83</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 Niger         2013                   2.59                2.52          NaN   </span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 Niger         2015                 NaN                   2.43            2.64</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 Niger         2018                 NaN                   2.31            2.42</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 Nigeria       2012                   1.59                1.43          NaN   </span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11 Nigeria       2013                   1.59                1.84          NaN   </span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12 Nigeria       2014                 NaN                   1.45            1.64</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13 Nigeria       2015                 NaN                   1.15            1.30</span></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14 Nigeria       2017                 NaN                   1.57            2.06</span></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15 South Africa  2011                   2.04                1.84          NaN   </span></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16 South Africa  2015                 NaN                   1.82            1.87</span></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 17 South Africa  2018                 NaN                   1.70            1.86</span></span>
 <span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ... with 2 more variables: trust_traditional_leaders &lt;dbl&gt;,</span></span>
 <span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   trust_religious_leaders &lt;dbl&gt;</span></span></code></pre></div>
 <p>And the factor representation, without weighting:</p>

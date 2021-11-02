@@ -3,6 +3,13 @@ test_survey <- read_rds (
                      package = "retroharmonize")
 )
 
+examples_dir <- system.file( "examples", package = "retroharmonize")
+
+my_rds_files <- dir( examples_dir)[grepl(".rds", 
+                                         dir(examples_dir))]
+
+example_surveys <- read_surveys(file.path(examples_dir, my_rds_files))
+
 test_that("Only surveys are accepted", {
   expect_error(metadata_create ( data.frame ( a = 1:2, 
                                         b = c("b", "C"))))
@@ -21,6 +28,7 @@ q_labels-q_na
 test_value2 <- example_metadata[which ( example_metadata$var_name_orig == "qg8"), ]
 
 test_that("Correct values are returned", {
+  expect_true(example_metadata$var_name_orig[1] == "rowid")
   expect_equal(unique(example_metadata$filename), "ZA7576.rds")
   expect_equal(as.character(unlist(example_metadata$na_labels[2])), NA_character_)
   expect_equal(example_metadata$label_orig[1], "unique identifier in za7576")
@@ -38,3 +46,10 @@ test_that("Correct values are returned", {
   ), c(8,6,2))
 })
 
+
+metadata_waves <- metadata_waves_create( example_surveys )
+
+
+test_that("Correct values are returned from waves", {
+  expect_true(metadata_waves$var_name_orig[1] == "rowid") 
+  })

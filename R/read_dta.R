@@ -1,23 +1,17 @@
-#' @title Read SPSS (`.sav`, `.zsav`, `.por`) files. Write `.sav` and `.zsav` files.
+#' @title Read Stata DTA files (`.dta`) files
 #' 
-#' @description This is a wrapper around \code{haven::\link[haven:read_spss]{read_spss}} 
+#' @description This is a wrapper around \code{haven::\link[haven:read_dta]{read_dta}} 
 #' with some exception handling.
 #'
-#' @details `read_sav()` reads both `.sav` and `.zsav` files; `write_sav()` creates
-#' `.zsav` files when `compress = TRUE`. `read_por()` reads `.por` files.
-#' `read_spss()` uses either `read_por()` or `read_sav()` based on the
-#' file extension.
+#' @details `read_dta()` reads both `.dta`  files.
 #'
-#' When the SPSS file has columns which are of class labelled, but have no labels,
-#' they are read as numeric or character vectors. 
+#' The funcion is not yet tested.
 #'
-#' @param file An SPSS file.
-#' @param user_na Should user-defined na_values be imported? Defaults
-#' to \code{TRUE}.
+#' @param file A STATA file.
 #' @param .name_repair Defaults to \code{"unique"} See 
 #' \code{tibble::\link[tibble:as_tibble]{as_tibble}} for details.
 #' @inheritParams read_rds
-#' @importFrom haven read_spss read_sav write_sav is.labelled
+#' @importFrom haven read_dta is.labelled
 #' @importFrom tibble rowid_to_column
 #' @importFrom fs path_ext_remove path_file is_file
 #' @importFrom labelled var_label
@@ -30,21 +24,16 @@
 #'   It is not printed on the console, but the RStudio viewer will show it.
 #'
 #'   `write_sav()` returns the input `data` invisibly.
-#' @name read_spss
+#' @name read_dta
 #' @family import functions
 #' @examples
 #' \donttest{
-#' path <- system.file("examples", "iris.sav", package = "haven")
-#' haven::read_sav(path)
-#'
-#' tmp <- tempfile(fileext = ".sav")
-#' haven::write_sav(mtcars, tmp)
-#' haven::read_sav(tmp)
+#' path <- system.file("examples", "iris.dta", package = "haven")
+#' read_dta(path)
 #' }
 #' @export
  
-read_spss <- function(file, 
-                      user_na = TRUE,
+read_dta <- function(file, 
                       id = NULL, 
                       filename = NULL, 
                       doi = NULL, 
@@ -63,11 +52,10 @@ read_spss <- function(file,
 
   # how to pass on optional parameters?
   
-  safely_read_haven_spss <- purrr::safely(.f = haven::read_spss)
+  safely_read_haven_dta  <- purrr::safely(.f = haven::read_dta)
 
-  tmp <- safely_read_haven_spss (file = file, 
-                                 user_na = user_na, 
-                                 .name_repair = .name_repair)
+  tmp <- safely_read_haven_dta (file = file, 
+                                .name_repair = .name_repair)
   
   if ( ! is.null(tmp$error) ) {
     warning ( tmp$error, "\nReturning an empty survey." )
@@ -84,7 +72,7 @@ read_spss <- function(file,
   all_vars <- names(tmp)
   
   assertthat::assert_that(length(all_vars)>0, 
-                          msg = "The SPSS file has no names.")
+                          msg = "The STATA file has no names.")
   
   filename <- fs::path_file(file)
   

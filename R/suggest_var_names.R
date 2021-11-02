@@ -1,6 +1,6 @@
-#' @title Suggest Variable Names
+#' @title Suggest variable names
 #' 
-#' The function harmonizes the variable names of surveys (of class \code{survey}) that 
+#' @description The function harmonizes the variable names of surveys (of class \code{survey}) that 
 #' are imported from an external file as a wave.
 #' 
 #' @param metadata A metadata table created by \code{metadata_create} and binded together for 
@@ -11,7 +11,6 @@
 #' @param case Unless it is set to \code{NULL} it will standardize the suggested variable name with 
 #' \code{\link[snakecase]{to_any_case}}. The default is \code{"snake"}.
 #' @importFrom dplyr mutate left_join select all_of
-#' @importFrom purrr set_names
 #' @importFrom assertthat assert_that
 #' @importFrom glue glue
 #' @importFrom utils head
@@ -73,7 +72,7 @@ suggest_var_names <- function( metadata,
   }
 } 
 
-#' @title Suggest Permanent Names
+#' @title Suggest permanent names
 #' 
 #' @description Suggest the use of established naming conventions. 
 #' 

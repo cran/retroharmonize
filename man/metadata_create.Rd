@@ -2,12 +2,17 @@
 % Please edit documentation in R/metadata_create.R
 \name{metadata_create}
 \alias{metadata_create}
+\alias{metadata_waves_create}
 \title{Create a metadata table}
 \usage{
 metadata_create(survey)
+
+metadata_waves_create(survey_list)
 }
 \arguments{
 \item{survey}{A survey data frame.}
+
+\item{survey_list}{A list containing surveys of class survey.}
 }
 \value{
 A nested data frame with metadata and the range of 
@@ -17,6 +22,11 @@ labels, na_values and the na_range itself.
 Create a metadata table from the survey data files.
 }
 \details{
+A data frame like tibble ojbect is returned. 
+In case you are working with a list of surveys (waves), call 
+\code{\link{metadata_waves_create}}, which is a wrapper around 
+a list of  \code{\link{metadata_create}} calls.
+
 The structure of the returned tibble:
 \describe{
   \item{filename}{The original file name; if present; \code{missing}, if a non-\code{\link{survey}} data frame is used as input \code{survey}.}
@@ -41,4 +51,19 @@ metadata_create (
                       package = "retroharmonize")
           )
 )
+examples_dir <- system.file( "examples", package = "retroharmonize")
+
+my_rds_files <- dir( examples_dir)[grepl(".rds", 
+                                        dir(examples_dir))]
+
+example_surveys <- read_surveys(file.path(examples_dir, my_rds_files))
+metadata_waves_create (example_surveys)
 }
+\seealso{
+Other metadata functions: 
+\code{\link{create_codebook}()}
+
+Other metadata functions: 
+\code{\link{create_codebook}()}
+}
+\concept{metadata functions}
