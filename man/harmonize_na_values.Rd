@@ -18,13 +18,15 @@ Harmonize na_values in haven_labelled_spss
 \examples{
 \donttest{
 examples_dir <- system.file(
-    "examples", package = "retroharmonize"
-    )
+  "examples",
+  package = "retroharmonize"
+)
 
-test_read <- read_rds ( 
-     file.path(examples_dir, "ZA7576.rds"),
-     id = "ZA7576", 
-     doi = "test_doi")
+test_read <- read_rds(
+  file.path(examples_dir, "ZA7576.rds"),
+  id = "ZA7576",
+  doi = "test_doi"
+)
 
 harmonize_na_values(test_read)
 }
@@ -32,10 +34,11 @@ harmonize_na_values(test_read)
 \seealso{
 Other harmonization functions: 
 \code{\link{collect_val_labels}()},
+\code{\link{crosswalk_surveys}()},
+\code{\link{harmonize_survey_values}()},
 \code{\link{harmonize_values}()},
 \code{\link{harmonize_var_names}()},
-\code{\link{label_normalize}()},
-\code{\link{suggest_permanent_names}()},
-\code{\link{suggest_var_names}()}
+\code{\link{is.crosswalk_table}()},
+\code{\link{label_normalize}()}
 }
 \concept{harmonization functions}

@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -8,19 +8,22 @@ knitr::opts_chunk$set(
 library(retroharmonize)
 
 ## -----------------------------------------------------------------------------
-sl1 <- labelled_spss_survey (
-  x = c(1,1,0,8,8,8), 
-  labels = c("yes" =1,
-             "no" = 0,
-             "declined" = 8),
+sl1 <- labelled_spss_survey(
+  x = c(1, 1, 0, 8, 8, 8),
+  labels = c(
+    "yes" = 1,
+    "no" = 0,
+    "declined" = 8
+  ),
   label = "Do you agree?",
-  na_values = 8, 
-  id = "survey1")
+  na_values = 8,
+  id = "survey1"
+)
 
 print(sl1)
 
 ## -----------------------------------------------------------------------------
-is.labelled_spss_survey (sl1)
+is.labelled_spss_survey(sl1)
 
 ## -----------------------------------------------------------------------------
 haven::is.labelled(sl1)
@@ -35,16 +38,16 @@ labelled::na_values(sl1)
 sl1[3:4]
 
 ## -----------------------------------------------------------------------------
-df <- tibble::tibble (v1 = sl1)
+df <- tibble::tibble(v1 = sl1)
 ## Use tibble instead of data.frame(v1=sl1) ...
 print(df)
-## ... which inherits the methods of a data.frame 
+## ... which inherits the methods of a data.frame
 subset(df, v1 == 1)
 
 ## -----------------------------------------------------------------------------
-#double
-c(sl1, 1/7)
-vctrs::vec_c(sl1, 1/7)
+# double
+c(sl1, 1 / 7)
+vctrs::vec_c(sl1, 1 / 7)
 
 ## ----integer------------------------------------------------------------------
 c(sl1, 1:3)
@@ -63,29 +66,29 @@ as.numeric(sl1)
 as_numeric(sl1)
 
 ## -----------------------------------------------------------------------------
-median (as.numeric(sl1))
-median (sl1)
+median(as.numeric(sl1))
+median(sl1)
 
 ## -----------------------------------------------------------------------------
-quantile (as.numeric(sl1), 0.9)
-quantile (sl1, 0.9)
+quantile(as.numeric(sl1), 0.9)
+quantile(sl1, 0.9)
 
 ## -----------------------------------------------------------------------------
-mean (as.numeric(sl1))
-mean (sl1)
-mean (sl1, na.rm=TRUE)
+mean(as.numeric(sl1))
+mean(sl1)
+mean(sl1, na.rm = TRUE)
 
 ## -----------------------------------------------------------------------------
-weights1 <- runif (n = 6, min = 0, max = 1)
+weights1 <- runif(n = 6, min = 0, max = 1)
 weighted.mean(as.numeric(sl1), weights1)
 weighted.mean(sl1, weights1)
 
 ## -----------------------------------------------------------------------------
-sum (as.numeric(sl1))
-sum (sl1, na.rm=TRUE)
+sum(as.numeric(sl1))
+sum(sl1, na.rm = TRUE)
 
 ## -----------------------------------------------------------------------------
 as_numeric(sl1)
-min ( as_numeric(sl1))
-min ( as_numeric(sl1), na.rm=TRUE)
+min(as_numeric(sl1))
+min(as_numeric(sl1), na.rm = TRUE)
 

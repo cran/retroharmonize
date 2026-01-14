@@ -2,17 +2,19 @@
 % Please edit documentation in R/read_rds.R
 \name{read_rds}
 \alias{read_rds}
-\title{Read survey from rds file}
+\title{Read rds file}
 \usage{
-read_rds(file, id = NULL, filename = NULL, doi = NULL)
+read_rds(file, dataset_bibentry = NULL, id = NULL, doi = NULL)
 }
 \arguments{
-\item{file}{A re-saved survey, imported with \code{haven::\link[haven:read_spss]{read_spss}}}
+\item{file}{A path to a file to import.}
+
+\item{dataset_bibentry}{A bibliographic entry created with
+\code{dataset::\link[dataset:dublincore]{dublincore}} or
+\code{dataset::\link[dataset:datacite]{datacite}}.}
 
 \item{id}{An identifier of the tibble, if omitted, defaults to the
-file name.}
-
-\item{filename}{An import file name.}
+file name without its extension.}
 
 \item{doi}{An optional document object identifier.}
 }
@@ -20,21 +22,22 @@ file name.}
 A tibble, data frame variant with survey attributes.
 }
 \description{
-Read survey from rds file
+Import a survey from an rds file.
 }
 \examples{
-path <-  system.file("examples", "ZA7576.rds", package = "retroharmonize")
+path <- system.file("examples", "ZA7576.rds", package = "retroharmonize")
 read_survey <- read_rds(path)
 attr(read_survey, "id")
 attr(read_survey, "filename")
-attr(read_survey, "doi") 
+attr(read_survey, "doi")
 }
 \seealso{
 Other import functions: 
+\code{\link{harmonize_survey_variables}()},
 \code{\link{pull_survey}()},
+\code{\link{read_csv}()},
 \code{\link{read_dta}()},
 \code{\link{read_spss}()},
-\code{\link{read_surveys}()},
-\code{\link{subset_save_surveys}()}
+\code{\link{read_surveys}()}
 }
 \concept{import functions}

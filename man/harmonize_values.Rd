@@ -20,17 +20,17 @@ harmonize_values(
 \item{x}{A labelled vector}
 
 \item{harmonize_label}{A character vector of 1L containing the new,
-harmonize variable label. Defaults to \code{NULL}, in which case 
+harmonize variable label. Defaults to \code{NULL}, in which case
 it uses the variable label of \code{x}, unless it is also \code{NULL}.}
 
 \item{harmonize_labels}{A list of harmonization values}
 
-\item{na_values}{A named vector of \code{na_values}, the 
-observations that are defined to be treated as missing in 
+\item{na_values}{A named vector of \code{na_values}, the
+observations that are defined to be treated as missing in
 the SPSS-style coding.}
 
-\item{na_range}{A min, max range of  \code{na_range}, the 
-continuous missing value range. In most surveys this should be left 
+\item{na_range}{A min, max range of  \code{na_range}, the
+continuous missing value range. In most surveys this should be left
 \code{NULL}.}
 
 \item{id}{A survey ID, defaults to \code{survey_id}}
@@ -41,7 +41,7 @@ it uses the latest name of the object \code{x}.}
 \item{remove}{Defaults to \code{NULL}.  A character or regex that will be removed from all
 old value labels, like \code{"\\("|\\)} for ( and ).}
 
-\item{perl}{Use perl-like regex? Defaults to {FALSE}.}
+\item{perl}{Use perl-like regex? Defaults to \code{FALSE}.}
 }
 \value{
 A labelled vector that contains in its metadata attributes
@@ -50,41 +50,58 @@ labelling, with the numerical values representing the harmonized
 coding.
 }
 \description{
-Harmonize the values and labels of labelled vectors
+Create a labelled vector with harmonized numeric coding and
+value labels.
+}
+\details{
+Create a labelled vector that contains in its metadata attributes
+the original labelling, the original numeric coding and the current
+labelling, with the numerical values representing the harmonized
+coding.
 }
 \examples{
 var1 <- labelled::labelled_spss(
-  x = c(1,0,1,1,0,8,9), 
-  labels = c("TRUST" = 1, 
-             "NOT TRUST" = 0, 
-             "DON'T KNOW" = 8, 
-             "INAP. HERE" = 9), 
-  na_values = c(8,9))
+  x = c(1, 0, 1, 1, 0, 8, 9),
+  labels = c(
+    "TRUST" = 1,
+    "NOT TRUST" = 0,
+    "DON'T KNOW" = 8,
+    "INAP. HERE" = 9
+  ),
+  na_values = c(8, 9)
+)
 
-harmonize_values (
-  var1, 
-  harmonize_labels = list ( 
-    from = c("^tend\\\\sto|^trust", "^tend\\\\snot|not\\\\strust", "^dk|^don", "^inap"), 
+harmonize_values(
+  var1,
+  harmonize_labels = list(
+    from = c("^tend\\\\sto|^trust", "^tend\\\\snot|not\\\\strust", "^dk|^don", "^inap"),
     to = c("trust", "not_trust", "do_not_know", "inap"),
-    numeric_values = c(1,0,99997, 99999)), 
-    na_values = c("do_not_know" = 99997,
-                "inap" = 99999), 
-    id = "survey_id"
+    numeric_values = c(1, 0, 99997, 99999)
+  ),
+  na_values = c(
+    "do_not_know" = 99997,
+    "inap" = 99999
+  ),
+  id = "survey_id"
 )
 }
 \seealso{
-Other variable label harmonization functions: 
-\code{\link{harmonize_waves}()},
-\code{\link{label_normalize}()},
-\code{\link{na_range_to_values}()}
+Other harmonization functions: 
+\code{\link{collect_val_labels}()},
+\code{\link{crosswalk_surveys}()},
+\code{\link{harmonize_na_values}()},
+\code{\link{harmonize_survey_values}()},
+\code{\link{harmonize_var_names}()},
+\code{\link{is.crosswalk_table}()},
+\code{\link{label_normalize}()}
 
 Other harmonization functions: 
 \code{\link{collect_val_labels}()},
+\code{\link{crosswalk_surveys}()},
 \code{\link{harmonize_na_values}()},
+\code{\link{harmonize_survey_values}()},
 \code{\link{harmonize_var_names}()},
-\code{\link{label_normalize}()},
-\code{\link{suggest_permanent_names}()},
-\code{\link{suggest_var_names}()}
+\code{\link{is.crosswalk_table}()},
+\code{\link{label_normalize}()}
 }
 \concept{harmonization functions}
-\concept{variable label harmonization functions}
